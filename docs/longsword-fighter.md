@@ -18,7 +18,7 @@ The first playable fighter should be a heavy anime samurai archetype: slower tha
 - `assets/sprites/longsword-combat-sheet-02-atlas.png`: movement, dash, back evade, kick, and thrust animation sheet
 - `assets/sprites/longsword-combat-sheet-02.json`: frame map for combat sheet 02
 
-The base sheet drives idle, slash, launcher, block, hit, and victory placeholders. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust. Combat sheet 02 is scaled to match the base sheet's visible body height and foot alignment so Ren does not resize when switching animation sheets.
+The base sheet drives idle, slash, launcher, block, hit, and victory placeholders. The shoulder-sword idle frame has been cleaned of detached edge artifacts and now plays as a stable stance with subtle breathing instead of snapping between unrelated poses. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust. Combat sheet 02 is scaled to match the base sheet's visible body height and foot alignment so Ren does not resize when switching animation sheets.
 
 ## Current Godot Implementation
 

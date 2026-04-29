@@ -3,7 +3,7 @@
 ## Longsword Fighter
 
 - `longsword-sheet-source.png`: generated green-screen source sheet.
-- `longsword-sheet.png`: transparent working sheet for implementation.
+- `longsword-sheet.png`: transparent working sheet for implementation, with the shoulder-sword idle frame cleaned of detached neighboring-cell artifacts.
 - `longsword-combat-sheet-02-source.png`: generated green-screen source for the movement/control feedback pass.
 - `longsword-combat-sheet-02.png`: transparent source sheet from combat sheet 02.
 - `longsword-combat-sheet-02-atlas.png`: normalized 4 by 4 atlas with 448px cells for Godot integration.

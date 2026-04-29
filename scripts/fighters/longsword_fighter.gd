@@ -9,6 +9,7 @@ const BASE_SHEET_PATH := "res://assets/sprites/longsword-sheet.png"
 const COMBAT_SHEET_PATH := "res://assets/sprites/longsword-combat-sheet-02-atlas.png"
 const BASE_FRAME_W := 362
 const BASE_FRAME_H := 362
+const BASE_IDLE_FRAME := 1
 const COMBAT_FRAME_W := 448
 const COMBAT_FRAME_H := 448
 const BASE_SPRITE_SCALE := 0.58
@@ -655,7 +656,7 @@ func _frame_for_state() -> int:
 		return 10
 	match state:
 		"idle":
-			return 0 if int(state_time * 4.0) % 2 == 0 else 1
+			return BASE_IDLE_FRAME
 		"walk_forward":
 			return 2 if int(state_time * 9.0) % 2 == 0 else 3
 		"walk_back":
@@ -746,9 +747,16 @@ func _visual_offset_for_state(uses_combat_sheet: bool, frame: int) -> Vector2:
 	if uses_combat_sheet:
 		return Vector2(0, _combat_foot_offset(frame))
 	match state:
+		"idle":
+			return _idle_breath_offset()
 		"block":
 			return Vector2(0, 28)
 	return Vector2.ZERO
+
+
+func _idle_breath_offset() -> Vector2:
+	var breath: float = round((sin(state_time * TAU * 0.9) + 1.0) * 0.5)
+	return Vector2(0, -breath)
 
 
 func _combat_foot_offset(frame: int) -> float:
