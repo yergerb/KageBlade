@@ -47,6 +47,8 @@ Preferred path:
 
 The first Ren V2 implementation replaces only the idle state. Movement, duck, attacks, hit, block, and flip still use the older prototype sprite sheets so we can compare the new detail level without breaking the combat prototype.
 
+The current idle atlas keeps Ren's body, boots, and sword handle planted while the lower red cloth waves more strongly. The sword chain and tassel are animated as a separate moving layer, then the original sword handle/pommel is composited back on top so the weapon does not break.
+
 ## Generation Prompt
 
 The Ren V2 source sheet was generated with the built-in image generation path using this production brief:
