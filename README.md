@@ -10,6 +10,7 @@ OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scr
 - Godot combat/render scripts in `scripts/`
 - Static browser prototype in `index.html`
 - Greatsword idle/combat sprite sheets in `assets/sprites/`
+- Ren V2 high-detail concept sheet in `assets/concepts/`
 - Early combat prototype in `src/game.js`
 - Art direction and moveset notes in `docs/`
 
@@ -89,6 +90,8 @@ Open `index.html` in a browser. No install step is required yet.
 ## Art Direction
 
 The target look is a saturated neon night arcade style: dark OLED-friendly backgrounds, bright cyan/magenta/gold attacks, thick ink outlines, chunky HD pixel/cel-shaded sprites, and large readable weapon arcs.
+
+The next production art direction starts from `assets/concepts/ren-v2-model-sheet.png`, which is a higher-detail character sheet for a future rigged or cel-shaded sprite pipeline.
 
 ## Resolution Target
 
