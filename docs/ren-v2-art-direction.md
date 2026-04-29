@@ -47,8 +47,6 @@ Preferred path:
 
 The first Ren V2 implementation replaces only the idle state. Movement, duck, attacks, hit, block, and flip still use the older prototype sprite sheets so we can compare the new detail level without breaking the combat prototype.
 
-The current Ren V2 idle pass is intentionally more exaggerated than the first test: boots stay planted while the hair, tassel, sash, cloak panels, sword, and chest breathing motion move harder for a livelier anime fighter read.
-
 ## Generation Prompt
 
 The Ren V2 source sheet was generated with the built-in image generation path using this production brief:
