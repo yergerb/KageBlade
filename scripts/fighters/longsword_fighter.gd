@@ -6,17 +6,18 @@ signal combat_event(hit_stop: float, shake_amount: float)
 signal combo_changed(combo_count: int, damage: float)
 
 const BASE_SHEET_PATH := "res://assets/sprites/longsword-sheet.png"
-const IDLE_SHEET_PATH := "res://assets/sprites/longsword-idle-wind-atlas.png"
+const IDLE_SHEET_PATH := "res://assets/sprites/ren-v2-idle-atlas.png"
 const DUCK_SHEET_PATH := "res://assets/sprites/longsword-duck-atlas.png"
 const COMBAT_SHEET_PATH := "res://assets/sprites/longsword-combat-sheet-02-atlas.png"
 const BASE_FRAME_W := 362
 const BASE_FRAME_H := 362
 const BASE_IDLE_FRAME := 1
-const IDLE_FRAME_W := 362
-const IDLE_FRAME_H := 362
-const IDLE_SPRITE_SCALE := 0.58
+const IDLE_FRAME_W := 768
+const IDLE_FRAME_H := 896
+const IDLE_SPRITE_SCALE := 0.24
 const IDLE_FRAME_COUNT := 8
-const IDLE_FPS := 7.0
+const IDLE_FPS := 6.0
+const IDLE_VISIBLE_BOTTOM := 817.0
 const DUCK_FRAME_W := 362
 const DUCK_FRAME_H := 362
 const DUCK_SPRITE_SCALE := 0.58
@@ -30,6 +31,7 @@ const COMBAT_SPRITE_SCALE := 0.67
 const COMBAT_STATES := ["walk_forward", "walk_back", "dash_forward", "dash_back", "kick", "thrust"]
 const BASE_IDLE_VISIBLE_BOTTOM := 334.0
 const TARGET_VISUAL_FOOT_Y := (BASE_IDLE_VISIBLE_BOTTOM - BASE_FRAME_H) * BASE_SPRITE_SCALE
+const IDLE_VISUAL_OFFSET_Y := TARGET_VISUAL_FOOT_Y - ((IDLE_VISIBLE_BOTTOM - IDLE_FRAME_H) * IDLE_SPRITE_SCALE)
 const DUCK_VISUAL_OFFSET_Y := TARGET_VISUAL_FOOT_Y - ((DUCK_VISIBLE_BOTTOM - DUCK_FRAME_H) * DUCK_SPRITE_SCALE)
 const COMBAT_FRAME_VISIBLE_BOTTOMS := [
 	376.0, 376.0, 374.0, 368.0,
@@ -793,11 +795,13 @@ func _update_sprite() -> void:
 	sprite.region_rect = Rect2(col * frame_w, row * frame_h, frame_w, frame_h)
 	sprite.flip_h = facing < 0
 	sprite.scale = Vector2(sprite_scale, sprite_scale)
-	sprite.position = Vector2(0, -frame_h * sprite_scale * 0.5) + _visual_offset_for_state(uses_duck_sheet, uses_combat_sheet, frame)
+	sprite.position = Vector2(0, -frame_h * sprite_scale * 0.5) + _visual_offset_for_state(uses_idle_sheet, uses_duck_sheet, uses_combat_sheet, frame)
 	sprite.rotation = state_time * TAU * -facing * 1.7 if state == "flip" else 0.0
 
 
-func _visual_offset_for_state(uses_duck_sheet: bool, uses_combat_sheet: bool, frame: int) -> Vector2:
+func _visual_offset_for_state(uses_idle_sheet: bool, uses_duck_sheet: bool, uses_combat_sheet: bool, frame: int) -> Vector2:
+	if uses_idle_sheet:
+		return Vector2(0, IDLE_VISUAL_OFFSET_Y)
 	if uses_duck_sheet:
 		return Vector2(0, DUCK_VISUAL_OFFSET_Y)
 	if uses_combat_sheet:

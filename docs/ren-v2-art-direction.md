@@ -33,10 +33,19 @@ Preferred path:
 
 ## Immediate Next Steps
 
-1. Decide whether Ren V2 is locked or needs a second design variant.
-2. Build a neutral front-facing rig reference from the model sheet.
-3. Produce a real flip animation test with tucked legs, cloak drag, and sword-weight follow-through.
-4. Compare that flip test in Godot against the current prototype timing before replacing any more gameplay sprites.
+1. Playtest the wired Ren V2 idle test in Godot.
+2. Decide whether Ren V2 is locked or needs a second design variant.
+3. Build a neutral front-facing rig reference from the model sheet.
+4. Produce a real flip animation test with tucked legs, cloak drag, and sword-weight follow-through.
+5. Compare that flip test in Godot against the current prototype timing before replacing any more gameplay sprites.
+
+## Playable Art Test
+
+- `assets/sprites/ren-v2-idle-cutout.png`
+- `assets/sprites/ren-v2-idle-atlas.png`
+- `assets/sprites/ren-v2-idle-atlas.json`
+
+The first Ren V2 implementation replaces only the idle state. Movement, duck, attacks, hit, block, and flip still use the older prototype sprite sheets so we can compare the new detail level without breaking the combat prototype.
 
 ## Generation Prompt
 

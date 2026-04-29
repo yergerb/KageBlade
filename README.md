@@ -11,6 +11,7 @@ OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scr
 - Static browser prototype in `index.html`
 - Greatsword idle/combat sprite sheets in `assets/sprites/`
 - Ren V2 high-detail concept sheet in `assets/concepts/`
+- Ren V2 idle art test wired into the playable fighter idle state
 - Early combat prototype in `src/game.js`
 - Art direction and moveset notes in `docs/`
 
