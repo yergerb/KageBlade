@@ -88,6 +88,10 @@ Open `index.html` in a browser. No install step is required yet.
 
 The target look is a saturated neon night arcade style: dark OLED-friendly backgrounds, bright cyan/magenta/gold attacks, thick ink outlines, chunky HD pixel/cel-shaded sprites, and large readable weapon arcs.
 
+## Resolution Target
+
+Kageblade uses a 1280 by 720 gameplay canvas that scales cleanly to 2560 by 1440 and 3840 by 2160. Current development uses one high-resolution sprite atlas per animation pass; separate 1440p and 4K sprite exports are not needed yet.
+
 ## Next Production Steps
 
 1. Tighten the combat atlas frame crops after playtesting movement feel.

@@ -12,8 +12,16 @@ const BASE_FRAME_H := 362
 const COMBAT_FRAME_W := 448
 const COMBAT_FRAME_H := 448
 const BASE_SPRITE_SCALE := 0.58
-const COMBAT_SPRITE_SCALE := 0.47
+const COMBAT_SPRITE_SCALE := 0.67
 const COMBAT_STATES := ["walk_forward", "walk_back", "dash_forward", "dash_back", "kick", "thrust"]
+const BASE_IDLE_VISIBLE_BOTTOM := 334.0
+const TARGET_VISUAL_FOOT_Y := (BASE_IDLE_VISIBLE_BOTTOM - BASE_FRAME_H) * BASE_SPRITE_SCALE
+const COMBAT_FRAME_VISIBLE_BOTTOMS := [
+	376.0, 376.0, 374.0, 368.0,
+	362.0, 362.0, 360.0, 358.0,
+	360.0, 346.0, 344.0, 332.0,
+	374.0, 366.0, 370.0, 362.0
+]
 const GRAVITY := 1700.0
 const GROUND_Y := 610.0
 
@@ -730,29 +738,24 @@ func _update_sprite() -> void:
 	sprite.region_rect = Rect2(col * frame_w, row * frame_h, frame_w, frame_h)
 	sprite.flip_h = facing < 0
 	sprite.scale = Vector2(sprite_scale, sprite_scale)
-	sprite.position = Vector2(0, -frame_h * sprite_scale * 0.5) + _visual_offset_for_state(uses_combat_sheet)
+	sprite.position = Vector2(0, -frame_h * sprite_scale * 0.5) + _visual_offset_for_state(uses_combat_sheet, frame)
 	sprite.rotation = state_time * TAU * -facing * 1.7 if state == "flip" else 0.0
 
 
-func _visual_offset_for_state(uses_combat_sheet: bool) -> Vector2:
+func _visual_offset_for_state(uses_combat_sheet: bool, frame: int) -> Vector2:
 	if uses_combat_sheet:
-		match state:
-			"walk_forward":
-				return Vector2(0, 20)
-			"walk_back":
-				return Vector2(0, 25)
-			"dash_forward":
-				return Vector2(0, 29)
-			"dash_back":
-				return Vector2(0, 35)
-			"kick":
-				return Vector2(0, 21)
-			"thrust":
-				return Vector2(0, 23)
+		return Vector2(0, _combat_foot_offset(frame))
 	match state:
 		"block":
 			return Vector2(0, 28)
 	return Vector2.ZERO
+
+
+func _combat_foot_offset(frame: int) -> float:
+	if frame < 0 or frame >= COMBAT_FRAME_VISIBLE_BOTTOMS.size():
+		return 0.0
+	var raw_bottom := (float(COMBAT_FRAME_VISIBLE_BOTTOMS[frame]) - COMBAT_FRAME_H) * COMBAT_SPRITE_SCALE
+	return TARGET_VISUAL_FOOT_Y - raw_bottom
 
 
 func _update_debug_shapes() -> void:
