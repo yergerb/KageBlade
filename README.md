@@ -50,6 +50,7 @@ Open `scenes/main.tscn` if Godot does not show it automatically, then press Play
 Gamepad:
 
 - Left stick / D-pad: move
+- Hold Down: duck/crouch
 - Double tap forward/back: quick dash / back evade
 - `A`: jump / chase after launcher
 - `A` again in air: double jump
@@ -66,6 +67,7 @@ Gamepad:
 Keyboard:
 
 - Arrow keys / WASD: move
+- Hold Down / `S`: duck/crouch
 - Double tap forward/back: quick dash / back evade
 - `Space` / `W` / `Up`: jump
 - Jump again in air: double jump

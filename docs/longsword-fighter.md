@@ -17,15 +17,17 @@ The first playable fighter should be a heavy anime samurai archetype: slower tha
 - `assets/sprites/longsword-sheet-source.png`: original chroma-key source
 - `assets/sprites/longsword-idle-wind-atlas.png`: 8-frame planted idle loop with cloth, hair, sash, and sword wind motion
 - `assets/sprites/longsword-idle-wind-atlas.json`: frame map for the wind idle
+- `assets/sprites/longsword-duck-atlas.png`: 4-frame planted duck/crouch guard loop
+- `assets/sprites/longsword-duck-atlas.json`: frame map for the duck loop
 - `assets/sprites/longsword-combat-sheet-02-atlas.png`: movement, dash, back evade, kick, and thrust animation sheet
 - `assets/sprites/longsword-combat-sheet-02.json`: frame map for combat sheet 02
 
-The base sheet drives slash, launcher, block, hit, and victory placeholders. The shoulder-sword idle frame has been cleaned of detached edge artifacts and expanded into a planted wind-idle loop, so Ren's feet and body stay grounded while his cloth, hair, sash, and sword move. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust. Combat sheet 02 is scaled to match the base sheet's visible body height and foot alignment so Ren does not resize when switching animation sheets.
+The base sheet drives slash, launcher, block, hit, and victory placeholders. The shoulder-sword idle frame has been cleaned of detached edge artifacts and expanded into a planted wind-idle loop, so Ren's feet and body stay grounded while his cloth, hair, sash, and sword move. The crouch guard frame has been cleaned and expanded into a planted duck loop, and holding Down lowers Ren's hurtbox. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust. Combat sheet 02 is scaled to match the base sheet's visible body height and foot alignment so Ren does not resize when switching animation sheets.
 
 ## Current Godot Implementation
 
 - `scenes/fighters/longsword_fighter.tscn`: reusable fighter scene with sprite, hurtbox, hitbox, and controller script.
-- `scripts/fighters/longsword_fighter.gd`: forward/back walk states with combat-sheet animation, double-tap dash/back evade, double jump, light combo, launcher, forward+Y thrust with combat-sheet animation, kick with combat-sheet animation, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
+- `scripts/fighters/longsword_fighter.gd`: forward/back walk states with combat-sheet animation, hold Down duck/crouch with a shorter hurtbox, double-tap dash/back evade, double jump, light combo, launcher, forward+Y thrust with combat-sheet animation, kick with combat-sheet animation, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
 - `scenes/main.tscn`: training room controller with Ren vs a dummy.
 
 ## Best Moveset Direction

@@ -7,6 +7,7 @@ signal combo_changed(combo_count: int, damage: float)
 
 const BASE_SHEET_PATH := "res://assets/sprites/longsword-sheet.png"
 const IDLE_SHEET_PATH := "res://assets/sprites/longsword-idle-wind-atlas.png"
+const DUCK_SHEET_PATH := "res://assets/sprites/longsword-duck-atlas.png"
 const COMBAT_SHEET_PATH := "res://assets/sprites/longsword-combat-sheet-02-atlas.png"
 const BASE_FRAME_W := 362
 const BASE_FRAME_H := 362
@@ -16,6 +17,12 @@ const IDLE_FRAME_H := 362
 const IDLE_SPRITE_SCALE := 0.58
 const IDLE_FRAME_COUNT := 8
 const IDLE_FPS := 7.0
+const DUCK_FRAME_W := 362
+const DUCK_FRAME_H := 362
+const DUCK_SPRITE_SCALE := 0.58
+const DUCK_FRAME_COUNT := 4
+const DUCK_FPS := 6.0
+const DUCK_VISIBLE_BOTTOM := 303.0
 const COMBAT_FRAME_W := 448
 const COMBAT_FRAME_H := 448
 const BASE_SPRITE_SCALE := 0.58
@@ -23,12 +30,15 @@ const COMBAT_SPRITE_SCALE := 0.67
 const COMBAT_STATES := ["walk_forward", "walk_back", "dash_forward", "dash_back", "kick", "thrust"]
 const BASE_IDLE_VISIBLE_BOTTOM := 334.0
 const TARGET_VISUAL_FOOT_Y := (BASE_IDLE_VISIBLE_BOTTOM - BASE_FRAME_H) * BASE_SPRITE_SCALE
+const DUCK_VISUAL_OFFSET_Y := TARGET_VISUAL_FOOT_Y - ((DUCK_VISIBLE_BOTTOM - DUCK_FRAME_H) * DUCK_SPRITE_SCALE)
 const COMBAT_FRAME_VISIBLE_BOTTOMS := [
 	376.0, 376.0, 374.0, 368.0,
 	362.0, 362.0, 360.0, 358.0,
 	360.0, 346.0, 344.0, 332.0,
 	374.0, 366.0, 370.0, 362.0
 ]
+const STAND_HURT_SIZE := Vector2(90.0, 196.0)
+const DUCK_HURT_SIZE := Vector2(108.0, 132.0)
 const GRAVITY := 1700.0
 const GROUND_Y := 610.0
 
@@ -189,6 +199,7 @@ const MOVES := {
 
 var base_texture: Texture2D
 var idle_texture: Texture2D
+var duck_texture: Texture2D
 var combat_texture: Texture2D
 var opponent: LongswordFighter
 var effect_layer: Node
@@ -315,6 +326,8 @@ func step_player(delta: float) -> void:
 				_start_light_combo()
 			else:
 				_start_action("air_light")
+		elif holding_down and _on_ground():
+			_move_duck(move)
 		else:
 			_move_ground(move)
 
@@ -384,7 +397,8 @@ func apply_screen_offset(offset: Vector2) -> void:
 
 
 func hurt_box() -> Rect2:
-	return Rect2(Vector2(position.x - 45.0, position.y - 196.0), Vector2(90.0, 196.0))
+	var hurt_size := _hurt_box_size()
+	return Rect2(Vector2(position.x - hurt_size.x * 0.5, position.y - hurt_size.y), hurt_size)
 
 
 func attack_box(move: Dictionary) -> Rect2:
@@ -396,7 +410,8 @@ func attack_box(move: Dictionary) -> Rect2:
 func _draw() -> void:
 	if not debug_boxes:
 		return
-	var local_hurt := Rect2(Vector2(-45, -196), Vector2(90, 196))
+	var hurt_size := _hurt_box_size()
+	var local_hurt := Rect2(Vector2(-hurt_size.x * 0.5, -hurt_size.y), hurt_size)
 	draw_rect(local_hurt, Color(0.0, 0.9, 1.0, 0.34), false, 2.0)
 
 	if action != "":
@@ -411,6 +426,7 @@ func _draw() -> void:
 func _load_sprite_sheets() -> void:
 	base_texture = _load_texture(BASE_SHEET_PATH)
 	idle_texture = _load_texture(IDLE_SHEET_PATH)
+	duck_texture = _load_texture(DUCK_SHEET_PATH)
 	combat_texture = _load_texture(COMBAT_SHEET_PATH)
 	sprite.texture = base_texture
 
@@ -506,6 +522,11 @@ func _move_ground(move: float) -> void:
 	else:
 		velocity.x = lerp(velocity.x, 0.0, 0.23)
 		_set_state("idle")
+
+
+func _move_duck(move: float) -> void:
+	_set_state("duck")
+	velocity.x = lerp(velocity.x, move * 82.0, 0.35)
 
 
 func _check_dash_tap() -> void:
@@ -661,6 +682,8 @@ func _on_ground() -> bool:
 func _frame_for_state() -> int:
 	if _uses_idle_sheet():
 		return _idle_frame_for_state()
+	if _uses_duck_sheet():
+		return _duck_frame_for_state()
 	if _uses_combat_sheet():
 		return _combat_frame_for_state()
 	if health <= 0.0:
@@ -668,6 +691,8 @@ func _frame_for_state() -> int:
 	match state:
 		"idle":
 			return BASE_IDLE_FRAME
+		"duck":
+			return 4
 		"walk_forward":
 			return 2 if int(state_time * 9.0) % 2 == 0 else 3
 		"walk_back":
@@ -697,12 +722,20 @@ func _uses_idle_sheet() -> bool:
 	return health > 0.0 and state == "idle" and idle_texture != null
 
 
+func _uses_duck_sheet() -> bool:
+	return health > 0.0 and state == "duck" and duck_texture != null
+
+
 func _uses_combat_sheet() -> bool:
 	return health > 0.0 and COMBAT_STATES.has(state) and combat_texture != null
 
 
 func _idle_frame_for_state() -> int:
 	return int(state_time * IDLE_FPS) % IDLE_FRAME_COUNT
+
+
+func _duck_frame_for_state() -> int:
+	return int(state_time * DUCK_FPS) % DUCK_FRAME_COUNT
 
 
 func _combat_frame_for_state() -> int:
@@ -748,22 +781,25 @@ func _move_frame(move_name: String) -> int:
 
 func _update_sprite() -> void:
 	var uses_idle_sheet := _uses_idle_sheet()
+	var uses_duck_sheet := _uses_duck_sheet()
 	var uses_combat_sheet := _uses_combat_sheet()
 	var frame := _frame_for_state()
-	var frame_w := IDLE_FRAME_W if uses_idle_sheet else (COMBAT_FRAME_W if uses_combat_sheet else BASE_FRAME_W)
-	var frame_h := IDLE_FRAME_H if uses_idle_sheet else (COMBAT_FRAME_H if uses_combat_sheet else BASE_FRAME_H)
-	var sprite_scale := IDLE_SPRITE_SCALE if uses_idle_sheet else (COMBAT_SPRITE_SCALE if uses_combat_sheet else BASE_SPRITE_SCALE)
+	var frame_w := IDLE_FRAME_W if uses_idle_sheet else (DUCK_FRAME_W if uses_duck_sheet else (COMBAT_FRAME_W if uses_combat_sheet else BASE_FRAME_W))
+	var frame_h := IDLE_FRAME_H if uses_idle_sheet else (DUCK_FRAME_H if uses_duck_sheet else (COMBAT_FRAME_H if uses_combat_sheet else BASE_FRAME_H))
+	var sprite_scale := IDLE_SPRITE_SCALE if uses_idle_sheet else (DUCK_SPRITE_SCALE if uses_duck_sheet else (COMBAT_SPRITE_SCALE if uses_combat_sheet else BASE_SPRITE_SCALE))
 	var col := frame % 4
 	var row := int(frame / 4)
-	sprite.texture = idle_texture if uses_idle_sheet else (combat_texture if uses_combat_sheet else base_texture)
+	sprite.texture = idle_texture if uses_idle_sheet else (duck_texture if uses_duck_sheet else (combat_texture if uses_combat_sheet else base_texture))
 	sprite.region_rect = Rect2(col * frame_w, row * frame_h, frame_w, frame_h)
 	sprite.flip_h = facing < 0
 	sprite.scale = Vector2(sprite_scale, sprite_scale)
-	sprite.position = Vector2(0, -frame_h * sprite_scale * 0.5) + _visual_offset_for_state(uses_combat_sheet, frame)
+	sprite.position = Vector2(0, -frame_h * sprite_scale * 0.5) + _visual_offset_for_state(uses_duck_sheet, uses_combat_sheet, frame)
 	sprite.rotation = state_time * TAU * -facing * 1.7 if state == "flip" else 0.0
 
 
-func _visual_offset_for_state(uses_combat_sheet: bool, frame: int) -> Vector2:
+func _visual_offset_for_state(uses_duck_sheet: bool, uses_combat_sheet: bool, frame: int) -> Vector2:
+	if uses_duck_sheet:
+		return Vector2(0, DUCK_VISUAL_OFFSET_Y)
 	if uses_combat_sheet:
 		return Vector2(0, _combat_foot_offset(frame))
 	match state:
@@ -779,8 +815,16 @@ func _combat_foot_offset(frame: int) -> float:
 	return TARGET_VISUAL_FOOT_Y - raw_bottom
 
 
+func _hurt_box_size() -> Vector2:
+	return DUCK_HURT_SIZE if state == "duck" and _on_ground() else STAND_HURT_SIZE
+
+
 func _update_debug_shapes() -> void:
-	hurtbox_shape.position = Vector2(0, -98)
+	var hurt_size := _hurt_box_size()
+	hurtbox_shape.position = Vector2(0, -hurt_size.y * 0.5)
+	var hurt_rect_shape := hurtbox_shape.shape as RectangleShape2D
+	if hurt_rect_shape != null:
+		hurt_rect_shape.size = hurt_size
 	if action == "":
 		hitbox_shape.disabled = true
 		return
