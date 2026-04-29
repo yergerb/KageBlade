@@ -6,6 +6,7 @@ OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scr
 
 - Godot project in `project.godot`
 - Native Godot scene in `scenes/main.tscn`
+- Reusable longsword fighter scene in `scenes/fighters/longsword_fighter.tscn`
 - Godot combat/render scripts in `scripts/`
 - Static browser prototype in `index.html`
 - Greatsword character sprite sheet in `assets/sprites/`
@@ -42,7 +43,36 @@ Open Godot, choose **Import**, and select this file:
 
 `project.godot`
 
-Then press Play. The current native slice renders the approved longsword sheet on a dark arena with basic movement, attacks, block, parry, flip, hit sparks, health bars, and controller/keyboard input.
+Then press Play. The current native slice is a training room: Ren vs a dummy, the approved longsword sheet rendered through a reusable fighter scene, debug hitboxes, basic combo logic, launcher/chase setup, block, parry, flip, kunai, hit sparks, health bars, and controller/keyboard input.
+
+## Native Controls
+
+Gamepad:
+
+- Left stick / D-pad: move
+- `A`: jump / chase after launcher
+- `X`: mash-friendly light slash combo
+- `Down + X`: kunai
+- `Y`: launcher
+- `B`: kick
+- `RT`: block
+- `LT`: parry
+- `RB`: grab
+- `LB`: flip evade
+
+Keyboard:
+
+- Arrow keys / WASD: move
+- `Space` / `W` / `Up`: jump
+- `J` / `X`: light slash combo
+- `S + J` / `Down + X`: kunai
+- `I` / `Y`: launcher
+- `K` / `B`: kick
+- `L`: block
+- `U` / `Q`: parry
+- `O` / `R`: grab
+- `P` / `E`: flip evade
+- `Enter`: reset room
 
 ## Run Old Browser Prototype
 

@@ -18,6 +18,12 @@ The first playable fighter should be a heavy anime samurai archetype: slower tha
 
 The current sheet is a style-approved first pass, not the full final animation set.
 
+## Current Godot Implementation
+
+- `scenes/fighters/longsword_fighter.tscn`: reusable fighter scene with sprite, hurtbox, hitbox, and controller script.
+- `scripts/fighters/longsword_fighter.gd`: movement, light combo, launcher, kick, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
+- `scenes/main.tscn`: training room controller with Ren vs a dummy.
+
 ## Best Moveset Direction
 
 Start with a compact but expressive kit. This is enough to make him feel real before we overproduce animations.
