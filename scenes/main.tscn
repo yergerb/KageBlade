@@ -1,6 +1,90 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1m4by6i5yc0h"]
+[gd_scene load_steps=9 format=3 uid="uid://b1m4by6i5yc0h"]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_7phk0"]
+[ext_resource type="PackedScene" path="res://scenes/fighters/longsword_fighter.tscn" id="2_4epm3"]
+[ext_resource type="Script" path="res://scripts/effect_layer.gd" id="3_d422d"]
+[ext_resource type="Script" path="res://scripts/hud_layer.gd" id="4_mjb5m"]
+
+[sub_resource type="Gradient" id="Gradient_sky"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.04, 0.03, 0.08, 1, 0.2, 0.04, 0.12, 1, 0.02, 0.02, 0.03, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_sky"]
+gradient = SubResource("Gradient_sky")
+width = 1280
+height = 720
+fill = 1
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_preview"]
+blend_mode = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 34
+font_color = Color(1, 1, 1, 1)
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_7phk0")
+
+[node name="StagePreview" type="Node2D" parent="."]
+z_index = -100
+
+[node name="Sky" type="Sprite2D" parent="StagePreview"]
+position = Vector2(640, 360)
+texture = SubResource("GradientTexture2D_sky")
+material = SubResource("CanvasItemMaterial_preview")
+
+[node name="Moon" type="Polygon2D" parent="StagePreview"]
+position = Vector2(972, 108)
+color = Color(0.95, 0.86, 0.62, 0.92)
+polygon = PackedVector2Array(54, 0, 49.8834, 20.6648, 38.1838, 38.1838, 20.6648, 49.8834, 0, 54, -20.6648, 49.8834, -38.1838, 38.1838, -49.8834, 20.6648, -54, 0, -49.8834, -20.6648, -38.1838, -38.1838, -20.6648, -49.8834, 0, -54, 20.6648, -49.8834, 38.1838, -38.1838, 49.8834, -20.6648)
+
+[node name="Mountains" type="Polygon2D" parent="StagePreview"]
+color = Color(0.05, 0.08, 0.12, 0.9)
+polygon = PackedVector2Array(0, 450, 180, 340, 330, 464, 510, 362, 670, 476, 870, 318, 1030, 470, 1190, 362, 1280, 446, 1280, 610, 0, 610)
+
+[node name="Floor" type="Polygon2D" parent="StagePreview"]
+color = Color(0.045, 0.038, 0.035, 1)
+polygon = PackedVector2Array(0, 596, 1280, 596, 1280, 720, 0, 720)
+
+[node name="TitlePreview" type="Label" parent="StagePreview"]
+offset_left = 529.0
+offset_top = 38.0
+offset_right = 751.0
+offset_bottom = 88.0
+text = "KAGEBLADE"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+
+[node name="EffectLayer" type="Node2D" parent="."]
+z_index = 50
+script = ExtResource("3_d422d")
+
+[node name="Player" parent="." instance=ExtResource("2_4epm3")]
+position = Vector2(420, 610)
+display_name = "Ren"
+player_controlled = true
+training_dummy = false
+accent_a = Color(0, 0.9, 1, 1)
+accent_b = Color(1, 0.12, 0.76, 1)
+
+[node name="Dummy" parent="." instance=ExtResource("2_4epm3")]
+position = Vector2(830, 610)
+display_name = "Training Dummy"
+player_controlled = false
+training_dummy = true
+accent_a = Color(1, 0.16, 0.72, 1)
+accent_b = Color(0, 0.9, 1, 1)
+
+[node name="HUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("4_mjb5m")

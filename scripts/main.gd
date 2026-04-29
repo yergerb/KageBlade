@@ -1,9 +1,5 @@
 extends Node2D
 
-const FIGHTER_SCENE: PackedScene = preload("res://scenes/fighters/longsword_fighter.tscn")
-const EFFECT_LAYER_SCRIPT: Script = preload("res://scripts/effect_layer.gd")
-const HUD_LAYER_SCRIPT: Script = preload("res://scripts/hud_layer.gd")
-
 const GROUND_Y := 610.0
 
 var player: Node
@@ -21,39 +17,22 @@ func _ready() -> void:
 	_setup_inputs()
 	z_index = -100
 
-	effect_layer = Node2D.new()
-	effect_layer.set_script(EFFECT_LAYER_SCRIPT)
-	effect_layer.z_index = 50
-	add_child(effect_layer)
+	effect_layer = $EffectLayer
+	player = $Player
+	dummy = $Dummy
 
-	player = _spawn_fighter(
-		"Ren",
-		Vector2(420, GROUND_Y),
-		1,
-		true,
-		false,
-		Color(0.0, 0.9, 1.0),
-		Color(1.0, 0.12, 0.76)
-	)
-	dummy = _spawn_fighter(
-		"Training Dummy",
-		Vector2(830, GROUND_Y),
-		-1,
-		false,
-		true,
-		Color(1.0, 0.16, 0.72),
-		Color(0.0, 0.9, 1.0)
-	)
+	player.call("configure", "Ren", Vector2(420, GROUND_Y), 1, true, false, Color(0.0, 0.9, 1.0), Color(1.0, 0.12, 0.76))
+	dummy.call("configure", "Training Dummy", Vector2(830, GROUND_Y), -1, false, true, Color(1.0, 0.16, 0.72), Color(0.0, 0.9, 1.0))
+	player.set("effect_layer", effect_layer)
+	dummy.set("effect_layer", effect_layer)
 	player.set("opponent", dummy)
 	dummy.set("opponent", player)
 	fighters = [player, dummy]
 
-	hud_layer = Control.new()
-	hud_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hud_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hud_layer.set_script(HUD_LAYER_SCRIPT)
+	hud_layer = $HUD
 	hud_layer.set("fighters", fighters)
-	add_child(hud_layer)
+	player.connect("combat_event", Callable(self, "_on_combat_event"))
+	dummy.connect("combat_event", Callable(self, "_on_combat_event"))
 
 
 func _physics_process(delta: float) -> void:
@@ -102,15 +81,6 @@ func _draw() -> void:
 	_draw_halftone(size)
 	_draw_rooftops(size)
 	_draw_floor(size)
-
-
-func _spawn_fighter(fighter_name: String, start_position: Vector2, facing: int, controlled_by_player: bool, is_dummy: bool, accent_a: Color, accent_b: Color) -> Node:
-	var fighter: Node = FIGHTER_SCENE.instantiate()
-	add_child(fighter)
-	fighter.call("configure", fighter_name, start_position, facing, controlled_by_player, is_dummy, accent_a, accent_b)
-	fighter.set("effect_layer", effect_layer)
-	fighter.connect("combat_event", Callable(self, "_on_combat_event"))
-	return fighter
 
 
 func _on_combat_event(stop_time: float, shake_amount: float) -> void:

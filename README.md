@@ -43,7 +43,7 @@ Open Godot, choose **Import**, and select this file:
 
 `project.godot`
 
-Then press Play. The current native slice is a training room: Ren vs a dummy, the approved longsword sheet rendered through a reusable fighter scene, debug hitboxes, basic combo logic, launcher/chase setup, block, parry, flip, kunai, hit sparks, health bars, and controller/keyboard input.
+Open `scenes/main.tscn` if Godot does not show it automatically, then press Play. The current native slice is a training room: Ren vs a dummy, the approved longsword sheet rendered through a reusable fighter scene, debug hitboxes, basic combo logic, launcher/chase setup, block, parry, flip, kunai, hit sparks, health bars, and controller/keyboard input.
 
 ## Native Controls
 

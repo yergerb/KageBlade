@@ -12,8 +12,11 @@ size = Vector2(1, 1)
 script = ExtResource("1_8xvno")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+position = Vector2(0, -104.98)
+scale = Vector2(0.58, 0.58)
 centered = true
 region_enabled = true
+region_rect = Rect2(0, 0, 362, 362)
 
 [node name="Hurtbox" type="Area2D" parent="."]
 
