@@ -9,7 +9,7 @@ OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scr
 - Reusable longsword fighter scene in `scenes/fighters/longsword_fighter.tscn`
 - Godot combat/render scripts in `scripts/`
 - Static browser prototype in `index.html`
-- Greatsword character sprite sheet in `assets/sprites/`
+- Greatsword idle/combat sprite sheets in `assets/sprites/`
 - Early combat prototype in `src/game.js`
 - Art direction and moveset notes in `docs/`
 
@@ -43,7 +43,7 @@ Open Godot, choose **Import**, and select this file:
 
 `project.godot`
 
-Open `scenes/main.tscn` if Godot does not show it automatically, then press Play. The current native slice is a training room: Ren vs a dummy, the approved longsword sheet rendered through a reusable fighter scene, debug hitboxes, basic combo logic, launcher/chase setup, block, parry, flip, kunai, hit sparks, health bars, and controller/keyboard input.
+Open `scenes/main.tscn` if Godot does not show it automatically, then press Play. The current native slice is a training room: Ren vs a dummy, the approved longsword sheets rendered through a reusable fighter scene, debug hitboxes, basic combo logic, launcher/chase setup, block, parry, flip, kunai, hit sparks, health bars, and controller/keyboard input.
 
 ## Native Controls
 
@@ -90,8 +90,8 @@ The target look is a saturated neon night arcade style: dark OLED-friendly backg
 
 ## Next Production Steps
 
-1. Crop `assets/sprites/longsword-sheet.png` into individual animation frames.
-2. Replace the temporary canvas fighter art with sprite rendering.
-3. Build the greatsword fighter's core moveset before starting character two.
-4. Create matching effects sheets for slash trails, sparks, parries, blocks, and hit bursts.
-5. Create one dark rooftop arena background that keeps the fighters readable.
+1. Tighten the combat atlas frame crops after playtesting movement feel.
+2. Add sprite passes for launcher, slash chain, parry, grab, air slash, and hit reaction.
+3. Create matching effects sheets for slash trails, sparks, parries, blocks, and hit bursts.
+4. Create one dark rooftop arena background that keeps the fighters readable.
+5. Start character two after Ren's core movement and first combo route feel fun.

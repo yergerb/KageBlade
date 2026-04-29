@@ -11,19 +11,19 @@ The first playable fighter should be a heavy anime samurai archetype: slower tha
 - Neon cyan and magenta energy around blade impacts
 - Wins through spacing, timing, and scary counter hits
 
-## Current Sprite Sheet
+## Current Sprite Sheets
 
 - `assets/sprites/longsword-sheet.png`: transparent sheet for implementation
 - `assets/sprites/longsword-sheet-source.png`: original chroma-key source
 - `assets/sprites/longsword-combat-sheet-02-atlas.png`: movement, dash, back evade, kick, and thrust animation sheet
 - `assets/sprites/longsword-combat-sheet-02.json`: frame map for combat sheet 02
 
-The current sheet is a style-approved first pass, not the full final animation set.
+The base sheet drives idle, slash, launcher, block, hit, and victory placeholders. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust.
 
 ## Current Godot Implementation
 
 - `scenes/fighters/longsword_fighter.tscn`: reusable fighter scene with sprite, hurtbox, hitbox, and controller script.
-- `scripts/fighters/longsword_fighter.gd`: forward/back walk states, double-tap dash/back evade, double jump, light combo, launcher, forward+Y thrust, kick, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
+- `scripts/fighters/longsword_fighter.gd`: forward/back walk states with combat-sheet animation, double-tap dash/back evade, double jump, light combo, launcher, forward+Y thrust with combat-sheet animation, kick with combat-sheet animation, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
 - `scenes/main.tscn`: training room controller with Ren vs a dummy.
 
 ## Best Moveset Direction

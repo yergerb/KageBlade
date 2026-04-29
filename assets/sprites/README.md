@@ -9,4 +9,4 @@
 - `longsword-combat-sheet-02-atlas.png`: normalized 4 by 4 atlas with 448px cells for Godot integration.
 - `longsword-combat-sheet-02.json`: frame names and atlas coordinates.
 
-The original sheet is arranged as a rough 4 by 3 grid. Combat sheet 02 has a normalized atlas and manifest ready for wiring into the fighter controller.
+The original sheet is arranged as a rough 4 by 3 grid. Combat sheet 02 has a normalized atlas and manifest, and the fighter controller uses it for walk forward, walk backward, dash forward, back evade, kick, and forward thrust.
