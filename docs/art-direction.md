@@ -2,7 +2,7 @@
 
 ## North Star
 
-Steel Eclipse should feel like an original neon anime weapon fighter built for OLED screens: deep blacks, saturated attacks, readable silhouettes, and crunchy arcade impact.
+Kageblade should feel like an original neon anime weapon fighter built for OLED screens: deep blacks, saturated attacks, readable silhouettes, and crunchy arcade impact.
 
 ## Style Pillars
 

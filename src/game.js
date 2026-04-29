@@ -1366,8 +1366,8 @@
     ctx.lineWidth = 6;
     ctx.font = "900 28px ui-sans-serif, system-ui";
     ctx.textAlign = "center";
-    ctx.strokeText("STEEL ECLIPSE", W / 2, 42);
-    ctx.fillText("STEEL ECLIPSE", W / 2, 42);
+    ctx.strokeText("KAGEBLADE", W / 2, 42);
+    ctx.fillText("KAGEBLADE", W / 2, 42);
     ctx.font = "700 12px ui-sans-serif, system-ui";
     ctx.fillStyle = "rgba(245, 236, 217, 0.8)";
     ctx.fillText("Prototype 01", W / 2, 62);

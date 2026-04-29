@@ -1,4 +1,4 @@
-# Steel Eclipse
+# Kageblade
 
 OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scrolling arenas, and weapon-first combat.
 
