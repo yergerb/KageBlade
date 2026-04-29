@@ -21,7 +21,7 @@ The current sheet is a style-approved first pass, not the full final animation s
 ## Current Godot Implementation
 
 - `scenes/fighters/longsword_fighter.tscn`: reusable fighter scene with sprite, hurtbox, hitbox, and controller script.
-- `scripts/fighters/longsword_fighter.gd`: movement, light combo, launcher, kick, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
+- `scripts/fighters/longsword_fighter.gd`: forward/back walk states, double-tap dash/back evade, double jump, light combo, launcher, forward+Y thrust, kick, grab, kunai, block, parry, flip, hit reactions, combo counter data, and debug hitbox drawing.
 - `scenes/main.tscn`: training room controller with Ren vs a dummy.
 
 ## Best Moveset Direction
@@ -36,6 +36,7 @@ Start with a compact but expressive kit. This is enough to make him feel real be
 - Dash forward
 - Backstep
 - Jump
+- Double jump
 - Flip evade
 - Land
 
@@ -45,6 +46,7 @@ Start with a compact but expressive kit. This is enough to make him feel real be
 - `X, X`: second slash follow-up
 - `Forward + X`: advancing cut
 - `Y`: vertical launcher
+- `Forward + Y`: sword thrust
 - `Down + Y`: ground-splitting slam
 - `B`: boot kick to stop rushdown
 - `Air + X`: falling slash

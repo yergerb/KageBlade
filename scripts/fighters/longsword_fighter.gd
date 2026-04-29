@@ -69,16 +69,30 @@ const MOVES := {
 		"vertical_arc": true,
 		"launch": true
 	},
+	"thrust": {
+		"duration": 0.34,
+		"hit_start": 0.10,
+		"hit_end": 0.22,
+		"damage": 10.0,
+		"push": 470.0,
+		"lift": -110.0,
+		"stun": 0.20,
+		"box": Rect2(70, -142, 210, 54),
+		"frames": [2, 4, 6],
+		"arc_radius": 78.0,
+		"vertical_arc": false,
+		"launch": false
+	},
 	"kick": {
-		"duration": 0.26,
-		"hit_start": 0.08,
-		"hit_end": 0.17,
+		"duration": 0.32,
+		"hit_start": 0.10,
+		"hit_end": 0.21,
 		"damage": 8.0,
 		"push": 620.0,
 		"lift": 0.0,
 		"stun": 0.18,
 		"box": Rect2(36, -96, 96, 54),
-		"frames": [3],
+		"frames": [2, 3, 3],
 		"arc_radius": 72.0,
 		"vertical_arc": false,
 		"launch": false
@@ -176,6 +190,11 @@ var chase_window := 0.0
 var queued_action := ""
 var ai_timer := 0.0
 var bounds := Rect2(120, 0, 1040, 720)
+var last_tap_dir := 0
+var dash_tap_timer := 0.0
+var dash_cooldown := 0.0
+var dash_dir := 0
+var jumps_used := 0
 
 
 func _ready() -> void:
@@ -203,6 +222,12 @@ func configure(fighter_name: String, start_position: Vector2, start_facing: int,
 		_update_sprite()
 
 
+func _set_state(next_state: String, force_restart: bool = false) -> void:
+	if force_restart or state != next_state:
+		state = next_state
+		state_time = 0.0
+
+
 func reset_fighter(start_position: Vector2, start_facing: int) -> void:
 	position = start_position
 	facing = start_facing
@@ -224,6 +249,11 @@ func reset_fighter(start_position: Vector2, start_facing: int) -> void:
 	combo_decay = 0.0
 	chase_window = 0.0
 	queued_action = ""
+	last_tap_dir = 0
+	dash_tap_timer = 0.0
+	dash_cooldown = 0.0
+	dash_dir = 0
+	jumps_used = 0
 	_update_sprite()
 	_update_debug_shapes()
 
@@ -238,9 +268,10 @@ func step_player(delta: float) -> void:
 
 	var move := Input.get_axis("move_left", "move_right")
 	var holding_down := Input.is_action_pressed("move_down")
+	_check_dash_tap()
 	blocking = Input.is_action_pressed("block") and _on_ground()
 	if blocking:
-		state = "block"
+		_set_state("block")
 		velocity.x = move * 115.0
 	else:
 		if Input.is_action_just_pressed("jump"):
@@ -252,7 +283,7 @@ func step_player(delta: float) -> void:
 		elif Input.is_action_just_pressed("grab"):
 			_start_action("grab")
 		elif Input.is_action_just_pressed("vertical"):
-			_start_action("launcher")
+			_start_action("thrust" if _is_holding_forward() else "launcher")
 		elif Input.is_action_just_pressed("kick"):
 			_start_action("kick")
 		elif Input.is_action_just_pressed("horizontal"):
@@ -272,13 +303,14 @@ func step_dummy(delta: float, target: LongswordFighter) -> void:
 		return
 
 	blocking = false
-	state = "idle"
+	_set_state("idle")
 	velocity.x = lerp(velocity.x, 0.0, 0.28)
 	if target != null:
 		face_target(target)
 
 
 func apply_physics(delta: float) -> void:
+	var was_on_ground := _on_ground()
 	if not _on_ground() or velocity.y < 0.0:
 		velocity.y += GRAVITY * delta
 	position += velocity * delta
@@ -286,8 +318,10 @@ func apply_physics(delta: float) -> void:
 	if position.y >= GROUND_Y:
 		position.y = GROUND_Y
 		velocity.y = 0.0
-		if state == "flip":
-			state = "idle"
+		if not was_on_ground:
+			jumps_used = 0
+		if state == "flip" or state == "dash_forward" or state == "dash_back":
+			_set_state("idle")
 
 	_update_sprite()
 	_update_debug_shapes()
@@ -353,6 +387,11 @@ func _draw() -> void:
 
 
 func _load_sprite_sheet() -> void:
+	var imported_texture := load(SHEET_PATH) as Texture2D
+	if imported_texture != null:
+		sprite.texture = imported_texture
+		return
+
 	var image := Image.load_from_file(SHEET_PATH)
 	if image == null:
 		push_error("Could not load longsword sprite sheet.")
@@ -362,6 +401,8 @@ func _load_sprite_sheet() -> void:
 
 func _tick_status(delta: float) -> void:
 	state_time += delta
+	dash_tap_timer = max(0.0, dash_tap_timer - delta)
+	dash_cooldown = max(0.0, dash_cooldown - delta)
 	combo_timer = max(0.0, combo_timer - delta)
 	combo_decay = max(0.0, combo_decay - delta)
 	chase_window = max(0.0, chase_window - delta)
@@ -374,17 +415,25 @@ func _tick_status(delta: float) -> void:
 
 	if stun > 0.0:
 		stun -= delta
-		state = "hit"
+		_set_state("hit")
 	if parry_time > 0.0:
 		parry_time -= delta
 	if invuln > 0.0:
 		invuln -= delta
 
+	if state == "dash_forward" or state == "dash_back":
+		var dash_duration := 0.17 if state == "dash_forward" else 0.19
+		velocity.x = dash_dir * (760.0 if state == "dash_forward" else 640.0)
+		if state_time >= dash_duration:
+			dash_dir = 0
+			velocity.x *= 0.35
+			_set_state("idle")
+
 	if action != "":
 		var move: Dictionary = MOVES[action]
 		if state_time >= float(move["duration"]):
 			action = ""
-			state = "idle"
+			_set_state("idle")
 			hit_done = false
 			var next_action := queued_action
 			queued_action = ""
@@ -395,7 +444,7 @@ func _buffer_inputs() -> void:
 	if Input.is_action_just_pressed("horizontal"):
 		queued_action = "light"
 	elif Input.is_action_just_pressed("vertical"):
-		queued_action = "launcher"
+		queued_action = "thrust" if _is_holding_forward() else "launcher"
 	elif Input.is_action_just_pressed("kick"):
 		queued_action = "kick"
 	elif Input.is_action_just_pressed("grab"):
@@ -413,6 +462,8 @@ func _apply_queued_action(next_action: String) -> void:
 				_start_action("air_light")
 		"launcher":
 			_start_action("launcher" if _on_ground() else "air_heavy")
+		"thrust":
+			_start_action("thrust")
 		"kick":
 			_start_action("kick")
 		"grab":
@@ -422,10 +473,48 @@ func _apply_queued_action(next_action: String) -> void:
 func _move_ground(move: float) -> void:
 	if abs(move) > 0.01:
 		velocity.x = move * 380.0
-		state = "walk"
+		_set_state("walk_forward" if sign(move) == facing else "walk_back")
 	else:
 		velocity.x = lerp(velocity.x, 0.0, 0.23)
-		state = "idle"
+		_set_state("idle")
+
+
+func _check_dash_tap() -> void:
+	if dash_cooldown > 0.0:
+		return
+	if Input.is_action_just_pressed("move_left"):
+		_register_direction_tap(-1)
+	elif Input.is_action_just_pressed("move_right"):
+		_register_direction_tap(1)
+
+
+func _register_direction_tap(dir: int) -> void:
+	if last_tap_dir == dir and dash_tap_timer > 0.0:
+		_start_dash(dir)
+		last_tap_dir = 0
+		dash_tap_timer = 0.0
+	else:
+		last_tap_dir = dir
+		dash_tap_timer = 0.24
+
+
+func _start_dash(dir: int) -> void:
+	dash_dir = dir
+	dash_cooldown = 0.28
+	blocking = false
+	action = ""
+	hit_done = false
+	_set_state("dash_forward" if dir == facing else "dash_back", true)
+	velocity.x = dir * (800.0 if dir == facing else 680.0)
+	velocity.y = min(velocity.y, 0.0)
+	if dir != facing:
+		invuln = max(invuln, 0.12)
+	if effect_layer != null:
+		effect_layer.call("burst", position + Vector2(-dir * 24, -20), accent_b if dir == facing else accent_a, 8, 240.0)
+
+
+func _is_holding_forward() -> bool:
+	return Input.is_action_pressed("move_right") if facing > 0 else Input.is_action_pressed("move_left")
 
 
 func _start_light_combo() -> void:
@@ -436,8 +525,7 @@ func _start_light_combo() -> void:
 
 func _start_action(action_name: String) -> void:
 	action = action_name
-	state = action_name
-	state_time = 0.0
+	_set_state(action_name, true)
 	hit_done = false
 	blocking = false
 	velocity.x *= 0.22
@@ -445,13 +533,14 @@ func _start_action(action_name: String) -> void:
 		velocity.x += facing * 105.0
 	elif action_name == "kick":
 		velocity.x += facing * 160.0
+	elif action_name == "thrust":
+		velocity.x += facing * 230.0
 	elif action_name == "kunai":
 		velocity.x -= facing * 35.0
 
 
 func _start_parry() -> void:
-	state = "block"
-	state_time = 0.0
+	_set_state("block", true)
 	parry_time = 0.18
 	meter = max(0.0, meter - 4.0)
 	if effect_layer != null:
@@ -459,8 +548,7 @@ func _start_parry() -> void:
 
 
 func _start_flip(move: float) -> void:
-	state = "flip"
-	state_time = 0.0
+	_set_state("flip", true)
 	invuln = 0.34
 	velocity.x = (move if abs(move) > 0.01 else -facing) * 680.0
 	velocity.y = -560.0
@@ -469,23 +557,26 @@ func _start_flip(move: float) -> void:
 
 func _try_jump_or_chase() -> void:
 	if chase_window > 0.0 and opponent != null:
-		state = "flip"
-		state_time = 0.0
+		_set_state("flip", true)
 		velocity.x = facing * 700.0
 		velocity.y = -520.0
 		chase_window = 0.0
-	elif _on_ground():
-		velocity.y = -680.0
+		jumps_used = 1
+	elif jumps_used < 2:
+		velocity.y = -680.0 if jumps_used == 0 else -620.0
+		jumps_used += 1
+		if effect_layer != null and jumps_used == 2:
+			effect_layer.call("burst", position + Vector2(0, -58), accent_b, 8, 220.0)
 
 
 func _is_committed() -> bool:
-	return action != "" or state == "flip"
+	return action != "" or state == "flip" or state == "dash_forward" or state == "dash_back"
 
 
 func _land_hit(target: LongswordFighter, move: Dictionary) -> void:
 	target.health = max(0.0, target.health - float(move["damage"]))
 	target.stun = float(move["stun"])
-	target.state = "hit"
+	target._set_state("hit", true)
 	target.velocity.x = facing * float(move["push"])
 	target.velocity.y = float(move["lift"])
 	meter = min(100.0, meter + 9.0)
@@ -507,7 +598,7 @@ func _land_hit(target: LongswordFighter, move: Dictionary) -> void:
 	if target.health <= 0.0:
 		target.velocity.y = -600.0
 		target.stun = 1.4
-		state = "victory"
+		_set_state("victory", true)
 
 
 func _block_success(target: LongswordFighter, move: Dictionary) -> void:
@@ -543,15 +634,19 @@ func _frame_for_state() -> int:
 		return 10
 	match state:
 		"idle":
-			return 0 if int(state_time * 5.0) % 2 == 0 else 1
-		"walk":
+			return 0 if int(state_time * 4.0) % 2 == 0 else 1
+		"walk_forward":
 			return 2 if int(state_time * 9.0) % 2 == 0 else 3
-		"light_1", "light_2", "light_3", "air_light", "kunai", "grab":
+		"walk_back":
+			return 3 if int(state_time * 7.0) % 2 == 0 else 2
+		"dash_forward":
+			return 3
+		"dash_back":
+			return 2
+		"light_1", "light_2", "light_3", "air_light", "kunai", "grab", "kick", "thrust":
 			return _move_frame(state)
 		"launcher", "air_heavy":
 			return _move_frame(state)
-		"kick":
-			return 3
 		"block":
 			return 9
 		"hit":

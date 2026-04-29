@@ -13,7 +13,7 @@ OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scr
 - Early combat prototype in `src/game.js`
 - Art direction and moveset notes in `docs/`
 
-## Controls
+## Legacy Browser Prototype Controls
 
 Gamepad:
 
@@ -50,10 +50,13 @@ Open `scenes/main.tscn` if Godot does not show it automatically, then press Play
 Gamepad:
 
 - Left stick / D-pad: move
+- Double tap forward/back: quick dash / back evade
 - `A`: jump / chase after launcher
+- `A` again in air: double jump
 - `X`: mash-friendly light slash combo
 - `Down + X`: kunai
 - `Y`: launcher
+- `Forward + Y`: sword thrust
 - `B`: kick
 - `RT`: block
 - `LT`: parry
@@ -63,10 +66,13 @@ Gamepad:
 Keyboard:
 
 - Arrow keys / WASD: move
+- Double tap forward/back: quick dash / back evade
 - `Space` / `W` / `Up`: jump
+- Jump again in air: double jump
 - `J` / `X`: light slash combo
 - `S + J` / `Down + X`: kunai
 - `I` / `Y`: launcher
+- `Forward + I` / `Forward + Y`: sword thrust
 - `K` / `B`: kick
 - `L`: block
 - `U` / `Q`: parry
