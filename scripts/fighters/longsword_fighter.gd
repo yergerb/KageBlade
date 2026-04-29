@@ -6,10 +6,16 @@ signal combat_event(hit_stop: float, shake_amount: float)
 signal combo_changed(combo_count: int, damage: float)
 
 const BASE_SHEET_PATH := "res://assets/sprites/longsword-sheet.png"
+const IDLE_SHEET_PATH := "res://assets/sprites/longsword-idle-wind-atlas.png"
 const COMBAT_SHEET_PATH := "res://assets/sprites/longsword-combat-sheet-02-atlas.png"
 const BASE_FRAME_W := 362
 const BASE_FRAME_H := 362
 const BASE_IDLE_FRAME := 1
+const IDLE_FRAME_W := 362
+const IDLE_FRAME_H := 362
+const IDLE_SPRITE_SCALE := 0.58
+const IDLE_FRAME_COUNT := 8
+const IDLE_FPS := 7.0
 const COMBAT_FRAME_W := 448
 const COMBAT_FRAME_H := 448
 const BASE_SPRITE_SCALE := 0.58
@@ -182,6 +188,7 @@ const MOVES := {
 @onready var hitbox_shape: CollisionShape2D = $Hitbox/CollisionShape2D
 
 var base_texture: Texture2D
+var idle_texture: Texture2D
 var combat_texture: Texture2D
 var opponent: LongswordFighter
 var effect_layer: Node
@@ -403,14 +410,16 @@ func _draw() -> void:
 
 func _load_sprite_sheets() -> void:
 	base_texture = _load_texture(BASE_SHEET_PATH)
+	idle_texture = _load_texture(IDLE_SHEET_PATH)
 	combat_texture = _load_texture(COMBAT_SHEET_PATH)
 	sprite.texture = base_texture
 
 
 func _load_texture(texture_path: String) -> Texture2D:
-	var imported_texture := load(texture_path) as Texture2D
-	if imported_texture != null:
-		return imported_texture
+	if ResourceLoader.exists(texture_path):
+		var imported_texture := load(texture_path) as Texture2D
+		if imported_texture != null:
+			return imported_texture
 
 	var image := Image.load_from_file(texture_path)
 	if image == null:
@@ -650,6 +659,8 @@ func _on_ground() -> bool:
 
 
 func _frame_for_state() -> int:
+	if _uses_idle_sheet():
+		return _idle_frame_for_state()
 	if _uses_combat_sheet():
 		return _combat_frame_for_state()
 	if health <= 0.0:
@@ -682,8 +693,16 @@ func _frame_for_state() -> int:
 	return 0
 
 
+func _uses_idle_sheet() -> bool:
+	return health > 0.0 and state == "idle" and idle_texture != null
+
+
 func _uses_combat_sheet() -> bool:
 	return health > 0.0 and COMBAT_STATES.has(state) and combat_texture != null
+
+
+func _idle_frame_for_state() -> int:
+	return int(state_time * IDLE_FPS) % IDLE_FRAME_COUNT
 
 
 func _combat_frame_for_state() -> int:
@@ -728,14 +747,15 @@ func _move_frame(move_name: String) -> int:
 
 
 func _update_sprite() -> void:
+	var uses_idle_sheet := _uses_idle_sheet()
 	var uses_combat_sheet := _uses_combat_sheet()
 	var frame := _frame_for_state()
-	var frame_w := COMBAT_FRAME_W if uses_combat_sheet else BASE_FRAME_W
-	var frame_h := COMBAT_FRAME_H if uses_combat_sheet else BASE_FRAME_H
-	var sprite_scale := COMBAT_SPRITE_SCALE if uses_combat_sheet else BASE_SPRITE_SCALE
+	var frame_w := IDLE_FRAME_W if uses_idle_sheet else (COMBAT_FRAME_W if uses_combat_sheet else BASE_FRAME_W)
+	var frame_h := IDLE_FRAME_H if uses_idle_sheet else (COMBAT_FRAME_H if uses_combat_sheet else BASE_FRAME_H)
+	var sprite_scale := IDLE_SPRITE_SCALE if uses_idle_sheet else (COMBAT_SPRITE_SCALE if uses_combat_sheet else BASE_SPRITE_SCALE)
 	var col := frame % 4
 	var row := int(frame / 4)
-	sprite.texture = combat_texture if uses_combat_sheet else base_texture
+	sprite.texture = idle_texture if uses_idle_sheet else (combat_texture if uses_combat_sheet else base_texture)
 	sprite.region_rect = Rect2(col * frame_w, row * frame_h, frame_w, frame_h)
 	sprite.flip_h = facing < 0
 	sprite.scale = Vector2(sprite_scale, sprite_scale)
@@ -747,16 +767,9 @@ func _visual_offset_for_state(uses_combat_sheet: bool, frame: int) -> Vector2:
 	if uses_combat_sheet:
 		return Vector2(0, _combat_foot_offset(frame))
 	match state:
-		"idle":
-			return _idle_breath_offset()
 		"block":
 			return Vector2(0, 28)
 	return Vector2.ZERO
-
-
-func _idle_breath_offset() -> Vector2:
-	var breath: float = round((sin(state_time * TAU * 0.9) + 1.0) * 0.5)
-	return Vector2(0, -breath)
 
 
 func _combat_foot_offset(frame: int) -> float:

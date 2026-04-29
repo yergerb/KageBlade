@@ -15,10 +15,12 @@ The first playable fighter should be a heavy anime samurai archetype: slower tha
 
 - `assets/sprites/longsword-sheet.png`: transparent sheet for implementation
 - `assets/sprites/longsword-sheet-source.png`: original chroma-key source
+- `assets/sprites/longsword-idle-wind-atlas.png`: 8-frame planted idle loop with cloth, hair, sash, and sword wind motion
+- `assets/sprites/longsword-idle-wind-atlas.json`: frame map for the wind idle
 - `assets/sprites/longsword-combat-sheet-02-atlas.png`: movement, dash, back evade, kick, and thrust animation sheet
 - `assets/sprites/longsword-combat-sheet-02.json`: frame map for combat sheet 02
 
-The base sheet drives idle, slash, launcher, block, hit, and victory placeholders. The shoulder-sword idle frame has been cleaned of detached edge artifacts and now plays as a stable stance with subtle breathing instead of snapping between unrelated poses. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust. Combat sheet 02 is scaled to match the base sheet's visible body height and foot alignment so Ren does not resize when switching animation sheets.
+The base sheet drives slash, launcher, block, hit, and victory placeholders. The shoulder-sword idle frame has been cleaned of detached edge artifacts and expanded into a planted wind-idle loop, so Ren's feet and body stay grounded while his cloth, hair, sash, and sword move. Combat sheet 02 is wired into walk forward, walk backward, dash forward, back evade, kick, and forward thrust. Combat sheet 02 is scaled to match the base sheet's visible body height and foot alignment so Ren does not resize when switching animation sheets.
 
 ## Current Godot Implementation
 

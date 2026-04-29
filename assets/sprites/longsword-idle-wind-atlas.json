@@ -1,0 +1,19 @@
+{
+  "image": "longsword-idle-wind-atlas.png",
+  "source": "longsword-sheet.png",
+  "cell_width": 362,
+  "cell_height": 362,
+  "columns": 4,
+  "rows": 2,
+  "fps": 7.0,
+  "frames": [
+    { "index": 0, "name": "idle_wind_00", "x": 0, "y": 0 },
+    { "index": 1, "name": "idle_wind_01", "x": 362, "y": 0 },
+    { "index": 2, "name": "idle_wind_02", "x": 724, "y": 0 },
+    { "index": 3, "name": "idle_wind_03", "x": 1086, "y": 0 },
+    { "index": 4, "name": "idle_wind_04", "x": 0, "y": 362 },
+    { "index": 5, "name": "idle_wind_05", "x": 362, "y": 362 },
+    { "index": 6, "name": "idle_wind_06", "x": 724, "y": 362 },
+    { "index": 7, "name": "idle_wind_07", "x": 1086, "y": 362 }
+  ]
+}
