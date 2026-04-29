@@ -15,6 +15,8 @@ The first playable fighter should be a heavy anime samurai archetype: slower tha
 
 - `assets/sprites/longsword-sheet.png`: transparent sheet for implementation
 - `assets/sprites/longsword-sheet-source.png`: original chroma-key source
+- `assets/sprites/longsword-combat-sheet-02-atlas.png`: movement, dash, back evade, kick, and thrust animation sheet
+- `assets/sprites/longsword-combat-sheet-02.json`: frame map for combat sheet 02
 
 The current sheet is a style-approved first pass, not the full final animation set.
 

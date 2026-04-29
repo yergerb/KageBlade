@@ -4,5 +4,9 @@
 
 - `longsword-sheet-source.png`: generated green-screen source sheet.
 - `longsword-sheet.png`: transparent working sheet for implementation.
+- `longsword-combat-sheet-02-source.png`: generated green-screen source for the movement/control feedback pass.
+- `longsword-combat-sheet-02.png`: transparent source sheet from combat sheet 02.
+- `longsword-combat-sheet-02-atlas.png`: normalized 4 by 4 atlas with 448px cells for Godot integration.
+- `longsword-combat-sheet-02.json`: frame names and atlas coordinates.
 
-The sheet is arranged as a rough 4 by 3 grid. Frames are not cropped yet, so the next implementation step is to export individual frame rectangles or build a small atlas manifest.
+The original sheet is arranged as a rough 4 by 3 grid. Combat sheet 02 has a normalized atlas and manifest ready for wiring into the fighter controller.

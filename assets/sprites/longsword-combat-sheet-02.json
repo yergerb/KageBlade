@@ -1,0 +1,26 @@
+{
+  "image": "longsword-combat-sheet-02-atlas.png",
+  "source": "longsword-combat-sheet-02.png",
+  "cell_width": 448,
+  "cell_height": 448,
+  "columns": 4,
+  "rows": 4,
+  "frames": [
+    { "index": 0, "name": "walk_forward_contact", "x": 0, "y": 0 },
+    { "index": 1, "name": "walk_forward_passing", "x": 448, "y": 0 },
+    { "index": 2, "name": "walk_forward_push_off", "x": 896, "y": 0 },
+    { "index": 3, "name": "walk_forward_recovery", "x": 1344, "y": 0 },
+    { "index": 4, "name": "walk_back_contact_guard", "x": 0, "y": 448 },
+    { "index": 5, "name": "walk_back_passing_guard", "x": 448, "y": 448 },
+    { "index": 6, "name": "walk_back_slide_guard", "x": 896, "y": 448 },
+    { "index": 7, "name": "walk_back_recovery_guard", "x": 1344, "y": 448 },
+    { "index": 8, "name": "dash_forward_low_blur", "x": 0, "y": 896 },
+    { "index": 9, "name": "dash_forward_follow_through", "x": 448, "y": 896 },
+    { "index": 10, "name": "back_evade_slide", "x": 896, "y": 896 },
+    { "index": 11, "name": "back_evade_recovery", "x": 1344, "y": 896 },
+    { "index": 12, "name": "kick_windup", "x": 0, "y": 1344 },
+    { "index": 13, "name": "kick_extension", "x": 448, "y": 1344 },
+    { "index": 14, "name": "forward_thrust_windup", "x": 896, "y": 1344 },
+    { "index": 15, "name": "forward_thrust_impact", "x": 1344, "y": 1344 }
+  ]
+}
