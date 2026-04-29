@@ -674,8 +674,15 @@ func _update_sprite() -> void:
 	var row := int(frame / 4)
 	sprite.region_rect = Rect2(col * FRAME_W, row * FRAME_H, FRAME_W, FRAME_H)
 	sprite.flip_h = facing < 0
-	sprite.position = Vector2(0, -FRAME_H * SPRITE_SCALE * 0.5)
+	sprite.position = Vector2(0, -FRAME_H * SPRITE_SCALE * 0.5) + _visual_offset_for_state()
 	sprite.rotation = state_time * TAU * -facing * 1.7 if state == "flip" else 0.0
+
+
+func _visual_offset_for_state() -> Vector2:
+	match state:
+		"block":
+			return Vector2(0, 28)
+	return Vector2.ZERO
 
 
 func _update_debug_shapes() -> void:
