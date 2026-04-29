@@ -6,7 +6,7 @@
 - `longsword-sheet.png`: transparent working sheet for implementation, with the shoulder-sword idle frame cleaned of detached neighboring-cell artifacts.
 - `longsword-idle-wind-atlas.png`: 8-frame planted idle loop with cloth, hair, sash, and sword wind motion.
 - `longsword-idle-wind-atlas.json`: frame names and atlas coordinates for the wind idle.
-- `ren-v2-idle-cutout.png`: transparent cutout extracted from the Ren V2 concept sheet for the first playable V2 art test.
+- `ren-v2-idle-cutout.png`: transparent cutout extracted from the Ren V2 concept sheet for the first playable V2 art test, with the boot/foot edges preserved.
 - `ren-v2-idle-atlas.png`: 8-frame Ren V2 idle atlas wired into the playable idle state.
 - `ren-v2-idle-atlas.json`: frame names and atlas coordinates for the Ren V2 idle test.
 - `longsword-duck-atlas.png`: 4-frame planted duck/crouch guard loop.
