@@ -1,4 +1,5 @@
 artifacts/
+.godot/
 node_modules/
 dist/
 build/

@@ -4,6 +4,9 @@ OLED-bright 2D weapon fighter prototype with neon anime arcade sprites, side-scr
 
 ## Current Slice
 
+- Godot project in `project.godot`
+- Native Godot scene in `scenes/main.tscn`
+- Godot combat/render scripts in `scripts/`
 - Static browser prototype in `index.html`
 - Greatsword character sprite sheet in `assets/sprites/`
 - Early combat prototype in `src/game.js`
@@ -33,7 +36,15 @@ Keyboard fallback:
 - `Q`: parry
 - `E`: flip
 
-## Run
+## Run In Godot
+
+Open Godot, choose **Import**, and select this file:
+
+`project.godot`
+
+Then press Play. The current native slice renders the approved longsword sheet on a dark arena with basic movement, attacks, block, parry, flip, hit sparks, health bars, and controller/keyboard input.
+
+## Run Old Browser Prototype
 
 Open `index.html` in a browser. No install step is required yet.
 
